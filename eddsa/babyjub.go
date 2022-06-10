@@ -1,4 +1,4 @@
-package loopring_sig
+package eddsa
 
 import (
 	"fmt"
