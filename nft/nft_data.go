@@ -1,6 +1,7 @@
 package nft
 
 import (
+	"fmt"
 	"math/big"
 	"strings"
 
@@ -48,5 +49,5 @@ func GetNftData(
 		return "", err
 	}
 
-	return "0x" + hash.Text(16), nil
+	return "0x" + fmt.Sprintf("%064s", hash.Text(16)), nil
 }
