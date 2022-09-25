@@ -95,3 +95,37 @@ func Hash(inpBI []*big.Int) (*big.Int, error) {
 	rE.ToBigIntRegular(r)
 	return r, nil
 }
+
+// Hash computes the Poseidon hash for the given inputs
+func HashWithParams(inpBI []*big.Int, nRoundsP int) (*big.Int, error) {
+	t := len(inpBI) + 1
+	// if len(inpBI) == 0 || len(inpBI) >= len(NROUNDSP)-1 {
+	// 	return nil, fmt.Errorf("invalid inputs length %d, max %d", len(inpBI), len(NROUNDSP)-1)
+	// }
+	// if !utils.CheckBigIntArrayInField(inpBI[:]) {
+	// 	return nil, errors.New("inputs values not inside Finite Field")
+	// }
+	inp := utils.BigIntArrayToElementArray(inpBI[:])
+	state := make([]*ff.Element, t)
+	state[t-1] = zero()
+	copy(state[:t], inp[:])
+
+	nRoundsF := NROUNDSF
+
+	newState := make([]*ff.Element, t)
+	for i := 0; i < t; i++ {
+		newState[i] = zero()
+	}
+
+	// ARK --> SBox --> M, https://eprint.iacr.org/2019/458.pdf pag.5
+	for i := 0; i < nRoundsF+nRoundsP; i++ {
+		ark(state, c.c, i)
+		sbox(nRoundsF, nRoundsP, state, i)
+		mix(state, newState, c.m[t])
+		state, newState = newState, state
+	}
+	rE := state[0]
+	r := big.NewInt(0)
+	rE.ToBigIntRegular(r)
+	return r, nil
+}

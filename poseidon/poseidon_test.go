@@ -77,3 +77,13 @@ func BenchmarkPoseidonHash(b *testing.B) {
 		Hash(bigArray4) //nolint:errcheck,gosec
 	}
 }
+
+func TestPoseidonHashWithParams(t *testing.T) {
+	b1 := big.NewInt(1)
+
+	h, err := HashWithParams([]*big.Int{b1}, 52)
+	assert.Nil(t, err)
+	assert.Equal(t,
+		"19366187437617654594343705700806116843633042542102315663002602054497987435734",
+		h.String())
+}
