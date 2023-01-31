@@ -32,6 +32,12 @@ var Order *big.Int
 // points that we use.
 var SubOrder *big.Int
 
+// Cofactor.
+var C *big.Int
+
+// L*B = 0, and (2^C)*L == #E
+var L *big.Int
+
 // init initializes global numbers and the subgroup base.
 func init() {
 	A = utils.NewIntFromString("168700")
@@ -48,6 +54,11 @@ func init() {
 	Order = utils.NewIntFromString(
 		"21888242871839275222246405745257275088614511777268538073601725287587578984328")
 	SubOrder = new(big.Int).Rsh(Order, 3) //nolint:gomnd
+
+	C = new(big.Int).SetInt64(8)
+
+	L = new(big.Int).Set(Order)
+	L = L.Div(L, C)
 }
 
 // PointProjective is the Point representation in projective coordinates
